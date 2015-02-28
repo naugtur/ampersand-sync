@@ -99,24 +99,19 @@ module.exports = function (method, model, options) {
     // Make the request. The callback executes functions that are compatible
     // With jQuery.ajax's syntax.
     var request = options.xhr = options.xhrImplementation(ajaxSettings, function (err, resp, body) {
-        //Turn a successful fetch of a HTTP error into an error
-        if (resp.statusCode >= 400) {
-            err = {
-                message: body
-            };
-        }
-        //resp.rawRequest contains the actual XMLHttpRequest object now.
-        if (err && options.error) return options.error(resp, 'error', err.message);
-
-        // Parse body as JSON if a string.
-        if (body && typeof body === 'string') {
-            try {
-                body = JSON.parse(body);
-            } catch (err) {
-                if (options.error) return options.error(resp, 'error', err.message);
+        if (err || resp.statusCode >= 400) {
+            if (options.error) return options.error(resp, 'error', err.message || body);
+        } else {
+            // Parse body as JSON if a string.
+            if (body && typeof body === 'string') {
+                try {
+                    body = JSON.parse(body);
+                } catch (err) {
+                    if (options.error) return options.error(resp, 'error', err.message);
+                }
             }
+            if (options.success) return options.success(body, 'success', resp);
         }
-        if (options.success) return options.success(body, 'success', resp);
     });
     model.trigger('request', model, request, options, ajaxSettings);
     request.ajaxSettings = ajaxSettings;
