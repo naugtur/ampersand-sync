@@ -19,7 +19,7 @@ test('should get a response for read', function (t) {
     m.on('change', function () {
         //TODO: assert more arguments
         t.equal(m.foo, "bar");
-    })
+    });
     m.fetch({
         success: function (data) {
             //TODO: assert more arguments
@@ -27,7 +27,7 @@ test('should get a response for read', function (t) {
             t.end();
         },
         error: function () {
-            t.fail('error while fetching (are you offline?)')
+            t.fail('error while fetching (are you offline?)');
             t.end();
         }
     });
@@ -46,7 +46,7 @@ test('should call error when read results in 404', function (t) {
             t.end();
         },
         error: function () {
-            t.pass('received an expected error')
+            t.pass('received an expected error');
             t.end();
         }
     });
